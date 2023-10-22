@@ -9,7 +9,7 @@ type User = {
 
 type CodeResponse = {
   status: boolean
-  message: string | FirebaseError['code']
+  error: string | FirebaseError['code']
 }
 
 export type { User, CodeResponse }

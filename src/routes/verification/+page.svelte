@@ -9,7 +9,7 @@
   import { verifyCode } from '$lib/firebase/client'
   import Loader from '$lib/components/Loader.svelte'
 
-  let codeResponse: CodeResponse = { status: true, message: 'error' }
+  let codeResponse: CodeResponse = { status: true, error: 'error' }
   const errorCollection: Record<string, any> = {
     error: 'Code have not been sent. Please try again',
     'auth/internal-error': 'Internal Server Error. Please try again',
@@ -161,7 +161,7 @@
                   >
                     <p class="font-semibold">Error message</p>
                     <p class="flex flex-row items-center text-red-500">
-                      {errorCollection[codeResponse?.message]}
+                      {errorCollection[codeResponse?.error]}
                     </p>
                   </div>
                 {/if}

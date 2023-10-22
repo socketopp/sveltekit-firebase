@@ -12,8 +12,18 @@
   import { onMount } from 'svelte'
   import { goto } from '$app/navigation'
   import { phoneSignIn } from '$lib/firebase/client'
+  import { page } from '$app/stores'
   export let data: PageData
-
+  let errorMessage: string | undefined
+  const errorCollection: Record<string, any> = {
+    error: 'Unexpected error. Please try again',
+    'auth/quota-exceeded':
+      'Too many attemps. To prevent abuse, new projects currently have an SMS daily quota of 50/day.',
+  }
+  const quota = $page.url.searchParams.get('quota')
+  if (quota) {
+    errorMessage = 'auth/quota-exceeded'
+  }
   onMount(() => {
     recaptchaSolved.set(false)
     disableSubmit.set(true)
@@ -25,12 +35,18 @@
   const { form, enhance, errors, reset, delayed, submitting } =
     superForm<AuthSchema>(data.form, {
       async onUpdated({ form }) {
+        errorMessage = undefined
         if (form.valid && Boolean($initRecaptcha) && !$user) {
-          const codeSent = await phoneSignIn(form.data.phoneNumber)
-          if (codeSent) {
+          const { status, error } = await phoneSignIn(form.data.phoneNumber)
+          if (error === 'auth/quota-exceeded') {
+            goto('/?quota=true')
+          }
+          if (status) {
             reset()
             goto('/verification')
           }
+          reset()
+          errorMessage = error
         }
       },
     })
@@ -79,11 +95,21 @@
             />
           </div>
 
+          {#if errorMessage}
+            <div
+              class="my-2 flex flex-row text-red-500 font-semibold text-medium"
+            >
+              <p class="pr-1">Error:</p>
+              <p>
+                {errorCollection[errorMessage]}
+              </p>
+            </div>
+          {/if}
           {#if $errors?.phoneNumber}
             <div
               class="my-2 flex flex-row text-red-500 font-semibold text-medium"
             >
-              Error: &nbsp;
+              <p class="pr-1">Error:</p>
               <p>
                 {$errors?.phoneNumber}
               </p>

@@ -45,7 +45,7 @@ async function phoneSignIn(phoneNumber: string) {
     const auth = get(store)
     const recaptchaVerifier = get(initRecaptcha)
 
-    if (!recaptchaVerifier) return
+    if (!recaptchaVerifier) return { status: false, error: 'error' }
     const confirmationResult = await signInWithPhoneNumber(
       auth,
       phoneNumber,
@@ -54,27 +54,33 @@ async function phoneSignIn(phoneNumber: string) {
 
     recaptchaStore.set(recaptchaVerifier)
     confirmationResultStore.set(confirmationResult)
-    return true
-  } catch (error) {
+    return { status: true }
+  } catch (error: unknown) {
+    if (error instanceof FirebaseError) {
+      return { status: false, error: error?.code }
+    }
     console.error('Error phoneSignIn', error)
-    return null
+    return {
+      status: false,
+      error: 'error',
+    }
   }
 }
 
 async function verifyCode(code: string): Promise<CodeResponse> {
   try {
     const confirmationResult = get(confirmationResultStore)
-    if (!confirmationResult) return { status: false, message: 'error' }
+    if (!confirmationResult) return { status: false, error: 'error' }
 
     const { user: data } = await confirmationResult.confirm(code)
     user.set(data)
-    return { status: true, message: 'success' }
+    return { status: true, error: 'success' }
   } catch (error: unknown) {
     if (error instanceof FirebaseError) {
-      return { status: false, message: error?.code }
+      return { status: false, error: error?.code }
     }
     console.error('Error verifyCode', error)
-    return { status: false, message: 'error' }
+    return { status: false, error: 'error' }
   }
 }
 

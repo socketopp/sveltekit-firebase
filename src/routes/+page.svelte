@@ -80,9 +80,13 @@
           </div>
 
           {#if $errors?.phoneNumber}
-            <div class="my-2 flex flex-row">
-              <p class="font-bold">Error: &nbsp;</p>
-              Phone number is malformed
+            <div
+              class="my-2 flex flex-row text-red-500 font-semibold text-medium"
+            >
+              Error: &nbsp;
+              <p>
+                {$errors?.phoneNumber}
+              </p>
             </div>
           {/if}
         </div>

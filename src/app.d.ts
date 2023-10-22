@@ -23,7 +23,7 @@ declare global {
     interface Window {}
   }
   interface Window {
-    recaptchaWidgetId: number
+    recaptchaWidgetId: number | null
   }
 }
 

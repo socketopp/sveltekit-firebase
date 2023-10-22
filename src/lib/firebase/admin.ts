@@ -47,7 +47,7 @@ const authenticateUser = async (event: RequestEvent) => {
       return user
     }
   } catch (error) {
-    console.log('Error authenticateUser', error)
+    console.error('Error authenticateUser', error)
   }
 
   return null

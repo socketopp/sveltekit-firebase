@@ -2,10 +2,6 @@ import { z } from 'zod'
 
 import { isValidPhoneNumber } from 'libphonenumber-js'
 
-const phoneRegex = new RegExp(
-  /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/,
-)
-
 const phoneSchema = z
   .object({
     phoneNumber: z
@@ -13,6 +9,15 @@ const phoneSchema = z
       .refine((value) => isValidPhoneNumber(value), {
         message: 'Invalid phone number',
       }),
+  })
+  .required()
+
+const userSchema = z
+  .object({
+    name: z
+      .string()
+      .min(1, { message: 'One does not simply submit without a name' }),
+    email: z.string().email(),
   })
   .required()
 
@@ -29,19 +34,7 @@ const otpSchema = z
 
 type AuthSchema = typeof phoneSchema
 type OTPSchema = typeof otpSchema
+type UserSchema = typeof userSchema
 
-export { phoneSchema, otpSchema, type AuthSchema, type OTPSchema }
-
-// import parsePhoneNumber from 'libphonenumber-js'
-
-// const phoneSchema = z.string().refine((value) => isValidPhoneNumber(value), {
-//   message: 'Invalid phone number',
-// })
-
-// const phoneSchema = z
-//   .object({
-//     phoneNumber: z
-//       .string({ required_error: 'Phone number is required' })
-//       .regex(phoneRegex, 'Phone number is malformed'),
-//   })
-//   .required()
+export { phoneSchema, otpSchema, userSchema }
+export type { AuthSchema, OTPSchema, UserSchema }

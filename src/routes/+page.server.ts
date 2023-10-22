@@ -3,13 +3,13 @@ import { fail } from '@sveltejs/kit'
 import { superValidate } from 'sveltekit-superforms/server'
 import type { Actions, PageServerLoad } from './$types'
 
-export const load: PageServerLoad = async ({ locals }) => {
+export const load: PageServerLoad = async () => {
   const form = await superValidate(phoneSchema)
   return { form }
 }
 
 export const actions: Actions = {
-  default: async ({ request, cookies }) => {
+  default: async ({ request }) => {
     const form = await superValidate(request, phoneSchema)
     if (!form.valid) {
       return fail(400, { form })

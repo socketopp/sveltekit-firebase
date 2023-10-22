@@ -29,7 +29,7 @@
       />
     </svg>
   </div>
-  <h1 class="font-medium text-lg my-10">
+  <h1 class="font-medium text-lg my-10 text-center">
     {message}
   </h1>
 </div>

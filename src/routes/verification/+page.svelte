@@ -157,10 +157,10 @@
 
                 {#if !codeResponse?.status}
                   <div
-                    class="flex flex-col items-center justify-center text-center text-md space-x-1 text-black"
+                    class="flex flex-col items-center justify-center text-center text-md space-x-1 text-red-500"
                   >
                     <p class="font-semibold">Error message</p>
-                    <p class="flex flex-row items-center text-black">
+                    <p class="flex flex-row items-center text-red-500">
                       {errorCollection[codeResponse?.message]}
                     </p>
                   </div>

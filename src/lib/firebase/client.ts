@@ -70,10 +70,10 @@ async function verifyCode(code: string): Promise<CodeResponse> {
     user.set(data)
     return { status: true, message: 'success' }
   } catch (error: unknown) {
-    console.error('Error verifyCode', error)
     if (error instanceof FirebaseError) {
       return { status: false, message: error?.code }
     }
+    console.error('Error verifyCode', error)
     return { status: false, message: 'error' }
   }
 }
